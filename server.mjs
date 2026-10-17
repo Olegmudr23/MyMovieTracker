@@ -69,6 +69,6 @@ const server=http.createServer(async(req,res)=>{try{
  if(p==='/api/recommendations')return json(res,200,db.prepare('SELECT recommendations.id,users.name,recommendations.text,created,movies.data FROM recommendations JOIN users ON sender=users.id JOIN movies ON movie_id=movies.id WHERE recipient=? ORDER BY recommendations.id DESC').all(user.id).map(r=>({...r,movie:JSON.parse(r.data),data:undefined})));
  fail('Не найдено',404);
  }
- const assets={'/':'index.html','/app.js':'app.js','/style.css':'style.css'};const asset=assets[p]||(p.startsWith('/share/')?'index.html':null);if(!asset)fail('Не найдено',404);res.setHeader('Content-Type',asset.endsWith('.css')?'text/css':asset.endsWith('.js')?'text/javascript':'text/html; charset=utf-8');res.end(readFileSync(resolve('public',asset)));
+ const assets={'/':'index.html','/app.js':'app.js','/theme.js':'theme.js','/themes.css':'themes.css','/style.css':'style.css'};const asset=assets[p]||(p.startsWith('/share/')?'index.html':null);if(!asset)fail('Не найдено',404);res.setHeader('Content-Type',asset.endsWith('.css')?'text/css':asset.endsWith('.js')?'text/javascript':'text/html; charset=utf-8');res.end(readFileSync(resolve('public',asset)));
  }catch(e){if(!res.headersSent)json(res,e.status||500,{error:e.status?e.message:'Ошибка сервера. Попробуйте ещё раз.'});else res.end();}});
 server.listen(Number(process.env.PORT||3000),'0.0.0.0',()=>console.log('Кинокруг: http://localhost:'+(process.env.PORT||3000)));
